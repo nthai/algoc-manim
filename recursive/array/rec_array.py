@@ -89,14 +89,23 @@ class MemorySlot():
         self.rectangle.shift(dir * self.scale)
         self.realign_text_and_label()
 
-MAGIC_NUMBER = 0.6
+MAGIC_NUMBER = 0.53
 
 class Array(Scene):
     def construct(self):
+        to_play = []
+
+        # create numbers
         nums = [9, 3, 0, 3]
+        num_objs = []
+        for idx, num in enumerate(nums):
+            num_obj = TextMobject(str(num))
+            num_obj.to_edge(DOWN, buff=2)
+            num_obj.shift(1.5*LEFT + idx*RIGHT)
+            num_objs.append(num_obj)
+
         code = Code()
         # write the code
-        to_play = []
         for c in code.original_code:
             to_play.append(Write(c))
 
@@ -137,6 +146,10 @@ class Array(Scene):
         arrow.move_to(code.original_code[0].get_left() + 0.25 * LEFT)
         to_play.append(ShowCreation(arrow))
 
+        # create brace
+        mem_group = VGroup(data_stack[5].rectangle, data_stack[6].rectangle)
+        brace = Brace(mem_group, LEFT)
+
         self.play(*to_play)
 
         # substitute values into variables
@@ -150,52 +163,107 @@ class Array(Scene):
                 # display values in memory
                 to_play.append(FadeIn(data_stack[5].text))
                 to_play.append(FadeIn(data_stack[6].text))
+                to_play.append(ShowCreation(brace))
+            if i == 2:
+                to_play.append(Write(num_objs[0]))
             self.play(*to_play)
         
-        # # fade in new code and shift down brace
-        # self.play(ApplyMethod(code.original_code[4].shift, code.scale*4*DOWN),
-        #           *[FadeIn(c) for c in code.blocks[0]])
+        # fade in new code and shift down brace
+        to_play = [ApplyMethod(code.original_code[4].shift, code.scale*4*DOWN)]
+        for c in code.blocks[0]:
+            to_play.append(FadeIn(c))
+        to_play.append(FadeIn(data_stack[7].text))
+        to_play.append(FadeIn(data_stack[8].text))
+        to_play.append(ApplyMethod(brace.shift, DOWN))
+        self.play(*to_play)
 
-        # # shift code diagonally into the corner
-        # diagonal_shift = code.scale*3*UP + MAGIC_NUMBER*LEFT
-        # self.play(*[ApplyMethod(c.shift, diagonal_shift) for c in code.subcode],
-        #           *[ApplyMethod(c.shift, diagonal_shift) for c in code.blocks[0]],
-        #           ApplyMethod(code.original_code[4].shift, diagonal_shift))
+        # shift code diagonally into the corner
+        diagonal_shift = code.scale*3*UP + MAGIC_NUMBER*LEFT
+        to_play = [ApplyMethod(code.original_code[4].shift, diagonal_shift)]
+        for c in code.subcode:
+            to_play.append(ApplyMethod(c.shift, diagonal_shift))
+        for c in code.blocks[0]:
+            to_play.append(ApplyMethod(c.shift, diagonal_shift))
+        to_play.append(ApplyMethod(arrow.shift, code.scale*3*UP))
+        self.play(*to_play)
 
-        # # fade in next code
-        # to_play = []
-        # for c in code.blocks[1]:
-        #     c.shift(diagonal_shift)
-        #     to_play.append(FadeIn(c))
-        # to_play.append(ApplyMethod(code.blocks[0][-1].shift, code.scale*4*DOWN))
-        # self.play(*to_play)
+        # move arrow and print number
+        for i in range(3):
+            to_play = []
+            to_play.append(ApplyMethod(arrow.shift, code.scale * DOWN))
+            if i == 2:
+                to_play.append(Write(num_objs[1]))
+            self.play(*to_play)
 
-        # # shift everythin diagonally again
-        # to_play = []
-        # for c in code.blocks[0] + code.blocks[1] + code.subcode:
-        #     to_play.append(ApplyMethod(c.shift, diagonal_shift))
-        # self.play(*to_play)
+        # fade in next code and shift down brace
+        to_play = []
+        for c in code.blocks[1]:
+            c.shift(diagonal_shift)
+            to_play.append(FadeIn(c))
+        to_play.append(ApplyMethod(code.original_code[-1].shift, code.scale*4*DOWN))
+        to_play.append(ApplyMethod(code.blocks[0][-1].shift, code.scale*4*DOWN))
+        to_play.append(FadeIn(data_stack[9].text))
+        to_play.append(FadeIn(data_stack[10].text))
+        to_play.append(ApplyMethod(brace.shift, DOWN))
+        self.play(*to_play)
 
-        # # fade in next code
-        # to_play = []
-        # for c in code.blocks[2]:
-        #     c.shift(diagonal_shift * 2)
-        #     to_play.append(FadeIn(c))
-        # to_play.append(ApplyMethod(code.blocks[1][-1].shift, code.scale*4*DOWN))
-        # self.play(*to_play)
+        # shift everythin diagonally again and shift arrow up
+        to_play = []
+        for c in code.blocks[0] + code.blocks[1] + code.subcode + [code.original_code[-1]]:
+            to_play.append(ApplyMethod(c.shift, diagonal_shift))
+        to_play.append(ApplyMethod(arrow.shift, code.scale*3*UP))
+        self.play(*to_play)
 
-        # # shift again
-        # to_play = []
-        # for c in code.blocks[0] + code.blocks[1] + code.blocks[2] + code.subcode:
-        #     to_play.append(ApplyMethod(c.shift, diagonal_shift))
-        # self.play(*to_play)
+        # move arrow and print number
+        for i in range(3):
+            to_play = []
+            to_play.append(ApplyMethod(arrow.shift, code.scale * DOWN))
+            if i == 2:
+                to_play.append(Write(num_objs[2]))
+            self.play(*to_play)
 
-        # # fade in final
-        # to_play = []
-        # for c in code.blocks[3]:
-        #     c.shift(diagonal_shift * 3)
-        #     to_play.append(FadeIn(c))
-        # to_play.append(ApplyMethod(code.blocks[2][-1].shift, code.scale*4*DOWN))
-        # self.play(*to_play)
+        # fade in next code
+        to_play = []
+        for c in code.blocks[2]:
+            c.shift(diagonal_shift * 2)
+            to_play.append(FadeIn(c))
+        to_play.append(ApplyMethod(code.original_code[-1].shift, code.scale*4*DOWN))
+        to_play.append(ApplyMethod(code.blocks[0][-1].shift, code.scale*4*DOWN))
+        to_play.append(ApplyMethod(code.blocks[1][-1].shift, code.scale*4*DOWN))
+        to_play.append(FadeIn(data_stack[11].text))
+        to_play.append(FadeIn(data_stack[12].text))
+        to_play.append(ApplyMethod(brace.shift, DOWN))
+        self.play(*to_play)
+
+        # shift again
+        to_play = []
+        for c in code.blocks[0] + code.blocks[1] + code.blocks[2] + code.subcode + [code.original_code[-1]]:
+            to_play.append(ApplyMethod(c.shift, diagonal_shift))
+        to_play.append(ApplyMethod(arrow.shift, code.scale*3*UP))
+        self.play(*to_play)
+
+        # move arrow and print number
+        for i in range(3):
+            to_play = []
+            to_play.append(ApplyMethod(arrow.shift, code.scale * DOWN))
+            if i == 2:
+                to_play.append(Write(num_objs[3]))
+            self.play(*to_play)
+
+        # fade in final
+        to_play = []
+        for c in code.blocks[3]:
+            c.shift(diagonal_shift * 3)
+            to_play.append(FadeIn(c))
+        to_play.append(ApplyMethod(code.original_code[-1].shift, code.scale*4*DOWN))
+        to_play.append(ApplyMethod(code.blocks[0][-1].shift, code.scale*4*DOWN))
+        to_play.append(ApplyMethod(code.blocks[1][-1].shift, code.scale*4*DOWN))
+        to_play.append(ApplyMethod(code.blocks[2][-1].shift, code.scale*4*DOWN))
+        to_play.append(FadeIn(data_stack[13].text))
+        to_play.append(FadeIn(data_stack[14].text))
+        to_play.append(ApplyMethod(brace.shift, DOWN))
+        self.play(*to_play)
+
+
 
         self.wait(3)
