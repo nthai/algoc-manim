@@ -264,6 +264,4 @@ class Array(Scene):
         to_play.append(ApplyMethod(brace.shift, DOWN))
         self.play(*to_play)
 
-
-
         self.wait(3)
