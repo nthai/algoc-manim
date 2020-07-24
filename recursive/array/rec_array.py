@@ -164,9 +164,9 @@ class Array(Scene):
                 to_play.append(FadeIn(data_stack[5].text))
                 to_play.append(FadeIn(data_stack[6].text))
                 to_play.append(ShowCreation(brace))
-            if i == 2:
-                to_play.append(Write(num_objs[0]))
             self.play(*to_play)
+            if i == 2:
+                self.play(Write(num_objs[0]))
         
         # fade in new code and shift down brace
         to_play = [ApplyMethod(code.original_code[4].shift, code.scale*4*DOWN)]
@@ -192,7 +192,7 @@ class Array(Scene):
             to_play = []
             to_play.append(ApplyMethod(arrow.shift, code.scale * DOWN))
             if i == 2:
-                to_play.append(Write(num_objs[1]))
+                self.play(Write(num_objs[1]))
             self.play(*to_play)
 
         # fade in next code and shift down brace
@@ -219,7 +219,7 @@ class Array(Scene):
             to_play = []
             to_play.append(ApplyMethod(arrow.shift, code.scale * DOWN))
             if i == 2:
-                to_play.append(Write(num_objs[2]))
+                self.play(Write(num_objs[2]))
             self.play(*to_play)
 
         # fade in next code
@@ -247,7 +247,7 @@ class Array(Scene):
             to_play = []
             to_play.append(ApplyMethod(arrow.shift, code.scale * DOWN))
             if i == 2:
-                to_play.append(Write(num_objs[3]))
+                self.play(Write(num_objs[3]))
             self.play(*to_play)
 
         # fade in final
@@ -259,9 +259,109 @@ class Array(Scene):
         to_play.append(ApplyMethod(code.blocks[0][-1].shift, code.scale*4*DOWN))
         to_play.append(ApplyMethod(code.blocks[1][-1].shift, code.scale*4*DOWN))
         to_play.append(ApplyMethod(code.blocks[2][-1].shift, code.scale*4*DOWN))
+
         to_play.append(FadeIn(data_stack[13].text))
         to_play.append(FadeIn(data_stack[14].text))
         to_play.append(ApplyMethod(brace.shift, DOWN))
+        self.play(*to_play)
+
+        # shift arrow down
+        self.play(ApplyMethod(arrow.shift, code.scale * DOWN))
+
+        # shift arrow to end of code
+        self.play(ApplyMethod(arrow.shift, code.scale * DOWN * 3))
+
+        # fade out code and shift arrow back
+        to_play = []
+        to_play.append(ApplyMethod(arrow.shift, code.scale * UP * 4))
+        for c in code.blocks[3]:
+            to_play.append(FadeOut(c))
+        to_play.append(ApplyMethod(code.original_code[-1].shift, code.scale*4*UP))
+        to_play.append(ApplyMethod(code.blocks[0][-1].shift, code.scale*4*UP))
+        to_play.append(ApplyMethod(code.blocks[1][-1].shift, code.scale*4*UP))
+        to_play.append(ApplyMethod(code.blocks[2][-1].shift, code.scale*4*UP))
+
+        to_play.append(FadeOut(data_stack[13].text))
+        to_play.append(FadeOut(data_stack[14].text))
+        to_play.append(ApplyMethod(brace.shift, UP))
+
+        self.play(*to_play)
+
+        self.play(ApplyMethod(arrow.shift, code.scale * DOWN))
+
+        # shift code back
+        to_play = []
+        for c in code.blocks[0] + code.blocks[1] + code.blocks[2] + code.subcode + [code.original_code[-1]]:
+            to_play.append(ApplyMethod(c.shift, -diagonal_shift))
+        to_play.append(ApplyMethod(arrow.shift, code.scale * DOWN * 3))
+        self.play(*to_play)
+
+        # fade out code and shift arrow back
+        to_play = []
+        to_play.append(ApplyMethod(arrow.shift, code.scale * UP * 4))
+        for c in code.blocks[2]:
+            to_play.append(FadeOut(c))
+        to_play.append(ApplyMethod(code.original_code[-1].shift, code.scale*4*UP))
+        to_play.append(ApplyMethod(code.blocks[0][-1].shift, code.scale*4*UP))
+        to_play.append(ApplyMethod(code.blocks[1][-1].shift, code.scale*4*UP))
+
+        to_play.append(FadeOut(data_stack[11].text))
+        to_play.append(FadeOut(data_stack[12].text))
+        to_play.append(ApplyMethod(brace.shift, UP))
+        self.play(*to_play)
+
+        self.play(ApplyMethod(arrow.shift, code.scale * DOWN))
+        # shift code back
+        to_play = []
+        for c in code.blocks[0] + code.blocks[1] + code.subcode + [code.original_code[-1]]:
+            to_play.append(ApplyMethod(c.shift, -diagonal_shift))
+        to_play.append(ApplyMethod(arrow.shift, code.scale * DOWN * 3))
+        self.play(*to_play)
+
+        # fade out code
+        to_play = []
+        to_play.append(ApplyMethod(arrow.shift, code.scale * UP * 4))
+        for c in code.blocks[1]:
+            to_play.append(FadeOut(c))
+        to_play.append(ApplyMethod(code.original_code[-1].shift, code.scale*4*UP))
+        to_play.append(ApplyMethod(code.blocks[0][-1].shift, code.scale*4*UP))
+
+        to_play.append(FadeOut(data_stack[9].text))
+        to_play.append(FadeOut(data_stack[10].text))
+        to_play.append(ApplyMethod(brace.shift, UP))
+        self.play(*to_play)
+
+        self.play(ApplyMethod(arrow.shift, code.scale * DOWN))
+        # shift code back
+        to_play = []
+        for c in code.blocks[0] + code.subcode + [code.original_code[-1]]:
+            to_play.append(ApplyMethod(c.shift, -diagonal_shift))
+        to_play.append(ApplyMethod(arrow.shift, code.scale * DOWN * 3))
+        self.play(*to_play)
+
+        # fade out code
+        to_play = []
+        to_play.append(ApplyMethod(arrow.shift, code.scale * UP * 4))
+        for c in code.blocks[0]:
+            to_play.append(FadeOut(c))
+        to_play.append(ApplyMethod(code.original_code[-1].shift, code.scale*4*UP))
+
+        to_play.append(FadeOut(data_stack[7].text))
+        to_play.append(FadeOut(data_stack[8].text))
+        to_play.append(ApplyMethod(brace.shift, UP))
+        self.play(*to_play)
+
+        self.play(ApplyMethod(arrow.shift, code.scale * DOWN))
+
+        to_play = []
+        for c in code.subcode:
+            to_play.append(FadeOut(c))
+        for idx, c in enumerate(code.original_code):
+            if idx != 4:
+                to_play.append(FadeIn(c))
+        to_play.append(FadeOut(data_stack[5].text))
+        to_play.append(FadeOut(data_stack[6].text))
+        to_play.append(FadeOut(brace))
         self.play(*to_play)
 
         self.wait(3)
