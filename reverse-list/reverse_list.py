@@ -80,9 +80,9 @@ class Reverse(Scene):
         self.to_play = []
         super().__init__(*args, **kwargs)
 
-    def play_to_play(self):
+    def play_to_play(self, wait=1):
         self.play(*self.to_play)
-        self.wait(1)
+        self.wait(wait)
         self.to_play = []
 
     def create_line_anchors(self):
@@ -91,6 +91,10 @@ class Reverse(Scene):
             dot = Dot()
             dot.move_to(4*RIGHT + (3.5-idx*0.5)*UP)
             self.line_anchors.append(dot)
+
+    def move_to_line(self, pointer, i):
+        self.to_play.append(ApplyMethod(pointer.move_to,
+                                        self.line_anchors[i].get_corner(LEFT)+0.1*LEFT))
 
     def construct(self):
         self.create_line_anchors()
@@ -264,6 +268,27 @@ class Reverse(Scene):
 
         self.play_to_play()
 
+        # show wrong approach by moving head to head->next
+        self.to_play.append(FadeOut(end_pointers[1]))
+        self.to_play.append(FadeIn(original_pointers[2]))
+        self.to_play.append(FadeOut(head_next_is_prev))
+        self.play_to_play()
+
+        head_is_head_next = TextMobject("\\texttt{{head = head->next;}}")
+        head_is_head_next.scale(0.5)
+        head_is_head_next.next_to(self.line_anchors[0], RIGHT, buff=0)
+        self.to_play.append(FadeIn(head_is_head_next))
+        self.to_play.append(Transform(head_pointer, head_pointers[3]))
+        self.play_to_play()
+
+        # restore previous state
+        self.to_play.append(FadeOut(head_is_head_next))
+        self.to_play.append(FadeIn(head_next_is_prev))
+        self.to_play.append(FadeIn(end_pointers[1]))
+        self.to_play.append(FadeOut(original_pointers[2]))
+        self.to_play.append(Transform(head_pointer, head_pointers[2]))
+        self.play_to_play()
+
         # create tmp dot
         tmp_dot = Dot()
         tmp_dot.move_to(2*DOWN + 6*RIGHT)
@@ -333,4 +358,56 @@ class Reverse(Scene):
         self.to_play.append(Transform(tmp_pointer, tmp_pointers[4]))
         self.play_to_play()
 
+        # reset
+        self.to_play.append(Transform(prev_pointer, prev_pointers[0]))
+        self.to_play.append(Transform(head_pointer, head_pointers[0]))
+        original_pointers[2].set_color(WHITE)
+        self.to_play.append(ApplyMethod(squares[2].set_color, WHITE))
+        self.to_play.append(ApplyMethod(end_pointers[1].set_color, WHITE))
+        self.to_play.append(ApplyMethod(dots[2].set_color, WHITE))
+        self.to_play.append(FadeOut(tmp_pointer))
+        self.to_play.append(FadeOut(broken_line))
+        self.to_play.append(FadeOut(null_arr2))
+        for i in range(2):
+            self.to_play.append(FadeOut(end_pointers[i]))
+        for i in range(3):
+            self.to_play.append(FadeIn(original_pointers[i]))
+        self.play_to_play()
 
+        end_pointers[1].set_color(WHITE)
+        tmp_pointer = tmp_pointers[1].copy()
+
+        code_pointer = Arrow(LEFT*0.4, ORIGIN, buff=0, stroke_width=20,
+                             max_tip_length_to_length_ratio=0.5,
+                             max_stroke_width_to_length_ratio=20)
+        code_pointer.move_to(self.line_anchors[0].get_corner(LEFT)+0.1*LEFT)
+
+        self.to_play.append(FadeIn(tmp_pointer))
+        self.to_play.append(FadeIn(code_pointer))
+        self.play_to_play()
+
+        for i in range(5):
+            if i == 4:
+                self.to_play.append(FadeOut(null_arr1))
+            else:
+                self.to_play.append(FadeOut(original_pointers[i]))
+            if i == 0:
+                self.to_play.append(FadeIn(null_arr2))
+            else:
+                self.to_play.append(FadeIn(end_pointers[i-1]))
+            self.move_to_line(code_pointer, 1)
+            self.play_to_play(0)
+            
+            self.to_play.append(Transform(prev_pointer, prev_pointers[i+1]))
+            self.move_to_line(code_pointer, 2)
+            self.play_to_play(0)
+
+            self.to_play.append(Transform(head_pointer, head_pointers[i+1]))
+            self.move_to_line(code_pointer, 3)
+            self.play_to_play(0)
+
+            if i < 4:
+                self.move_to_line(code_pointer, 0)
+                self.to_play.append(Transform(tmp_pointer, tmp_pointers[i+2]))
+                self.play_to_play(0)
+        self.wait(1)

@@ -85,6 +85,7 @@ class Stack(Scene):
             to_play.append(Write(memslot.label))
 
         self.play(*to_play)
+        self.wait(2)
 
         # first arrow
         arrow_main = Arrow(LEFT, RIGHT)
@@ -108,14 +109,17 @@ class Stack(Scene):
         self.play(Write(stack[0].text),
                   ShowCreation(arrow_main),
                   Write(text_main))
+        self.wait(1)
 
         stack[1].set_text("x: 3")
         self.play(Write(stack[1].text),
                   ShowCreation(arrow_inner),
                   Write(text_inner))
+        self.wait(1)
 
         stack[1].set_text("x: 6")
         self.play(Transform(stack[1].prev_text, stack[1].text))
+        self.wait(1)
 
         stack[2].set_text("x: 6")
         stack[2].text.move_to(stack[1].text.get_center())
@@ -123,26 +127,30 @@ class Stack(Scene):
         self.play(ApplyMethod(stack[2].text.move_to, stack[2].rectangle.get_center()),
                   ShowCreation(arrow_func),
                   Write(text_func))
+        self.wait(1)
 
         stack[2].set_text("x: 13")
         self.play(Transform(stack[2].prev_text, stack[2].text))
+        self.wait(1)
 
         self.play(FadeOut(stack[2].text),
                   FadeOut(stack[2].prev_text),
                   FadeOut(arrow_func),
                   FadeOut(text_func))
+        self.wait(1)
 
         self.play(FadeOut(stack[1].text),
                   FadeOut(stack[1].prev_text),
                   FadeOut(arrow_inner),
                   FadeOut(text_inner))
+        self.wait(1)
 
         stack[0].set_text("x: 3")
         self.play(Transform(stack[0].prev_text, stack[0].text))
+        self.wait(1)
 
         self.play(FadeOut(stack[0].text),
                   FadeOut(stack[0].prev_text),
                   FadeOut(arrow_main),
                   FadeOut(text_main))
-
-        self.wait(2)
+        self.wait(1)

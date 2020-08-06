@@ -10,7 +10,7 @@ class MyText:
         self.val = val
         self.text = TextMobject(str(val))
         self.text.scale(scale)
-        self.circle = Circle(radius=0.4*scale, color=GREEN)
+        self.circle = Circle(radius=0.4*scale, color=BLUE)
 
 class Numbers(Scene):
     def construct(self):
@@ -93,18 +93,22 @@ class Primes(Scene):
                     div.text.move_to(divs[jdx - 1].text.get_center() + RIGHT)
 
         self.play(*[Write(num.text) for num, _ in div_obs])
+        self.wait(1)
         self.play(*[Write(col.text) for col in colons],
                   *[Write(num.text) for _, divs in div_obs for num in divs])
+        self.wait(1)
 
-        self.play(*[ApplyMethod(elem.text.set_color, GREEN) for elem, divs in div_obs if len(divs) == 2],
-                  *[ApplyMethod(elem.text.set_color, GREEN) for _, divs in div_obs for elem in divs if len(divs) == 2],
-                  *[ApplyMethod(colons[idx].text.set_color, GREEN) for idx, (_, divs) in enumerate(div_obs) if len(divs) == 2],
+        self.play(*[ApplyMethod(elem.text.set_color, BLUE) for elem, divs in div_obs if len(divs) == 2],
+                  *[ApplyMethod(elem.text.set_color, BLUE) for _, divs in div_obs for elem in divs if len(divs) == 2],
+                  *[ApplyMethod(colons[idx].text.set_color, BLUE) for idx, (_, divs) in enumerate(div_obs) if len(divs) == 2],
                   *[ApplyMethod(elem.text.set_color, GRAY) for elem, divs in div_obs if len(divs) != 2],
                   *[ApplyMethod(elem.text.set_color, GRAY) for _, divs in div_obs for elem in divs if len(divs) != 2],
                   *[ApplyMethod(colons[idx].text.set_color, GRAY) for idx, (_, divs) in enumerate(div_obs) if len(divs) != 2])
+        self.wait(1)
         self.play(*[FadeOut(num.text) for num, _ in div_obs],
                   *[FadeOut(col.text) for col in colons],
                   *[FadeOut(num.text) for _, divs in div_obs for num in divs])
+        self.wait(1)
 
 class Number7(Scene):
     def construct(self):
@@ -122,20 +126,25 @@ class Number7(Scene):
 
         self.play(*[Write(num.text) for num in numbers],
                   Write(question))
+        self.wait(1)
 
         arrow = Arrow(UP, DOWN)
         arrow.move_to(numbers[1].text.get_center() + 2*UP)
         self.play(GrowArrow(arrow))
+        self.wait(1)
         for idx, num in enumerate(numbers):
             if idx >= 2 and idx < len(numbers) - 1:
                 self.play(ApplyMethod(arrow.move_to, num.text.get_center() + 2 * UP),
-                          ApplyMethod(numbers[idx - 1].text.set_color, GREEN),
+                          ApplyMethod(numbers[idx - 1].text.set_color, BLUE),
                           ShowCreation(numbers[idx - 1].circle))
-        self.play(ApplyMethod(numbers[-2].text.set_color, GREEN),
+                self.wait(1)
+        self.play(ApplyMethod(numbers[-2].text.set_color, BLUE),
                   ShowCreation(numbers[idx - 1].circle))
+        self.wait(1)
         self.play(*[FadeOut(num.text) for num in numbers],
                   *[FadeOut(num.circle) for idx, num in enumerate(numbers) if idx > 0 and idx < len(numbers) - 1],
                   FadeOut(question), FadeOut(arrow))
+        self.wait(1)
 
 class Number9(Scene):
     def construct(self):
@@ -153,16 +162,21 @@ class Number9(Scene):
 
         self.play(*[Write(num.text) for num in numbers],
                   Write(question))
+        self.wait(1)
 
         arrow = Arrow(UP, DOWN)
         arrow.move_to(numbers[1].text.get_center() + 2*UP)
         self.play(GrowArrow(arrow))
+        self.wait(1)
         self.play(ApplyMethod(arrow.move_to, numbers[2].text.get_center() + 2 * UP),
-                  ApplyMethod(numbers[1].text.set_color, GREEN),
+                  ApplyMethod(numbers[1].text.set_color, BLUE),
                   ShowCreation(numbers[1].circle))
+        self.wait(1)
         numbers[2].circle.set_color(RED)
         self.play(ApplyMethod(numbers[2].text.set_color, RED),
                   ShowCreation(numbers[2].circle))
+        self.wait(1)
         self.play(*[FadeOut(num.text) for num in numbers],
                   FadeOut(question), FadeOut(arrow), FadeOut(numbers[1].circle),
                   FadeOut(numbers[2].circle))
+        self.wait(1)
