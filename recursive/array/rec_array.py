@@ -151,6 +151,7 @@ class Array(Scene):
         brace = Brace(mem_group, LEFT)
 
         self.play(*to_play)
+        self.wait(1)
 
         # substitute values into variables
         for i in range(4):
@@ -165,6 +166,7 @@ class Array(Scene):
                 to_play.append(FadeIn(data_stack[6].text))
                 to_play.append(ShowCreation(brace))
             self.play(*to_play)
+            self.wait(1)
             if i == 2:
                 self.play(Write(num_objs[0]))
         
@@ -267,9 +269,11 @@ class Array(Scene):
 
         # shift arrow down
         self.play(ApplyMethod(arrow.shift, code.scale * DOWN))
+        self.wait(1)
 
         # shift arrow to end of code
         self.play(ApplyMethod(arrow.shift, code.scale * DOWN * 3))
+        self.wait(1)
 
         # fade out code and shift arrow back
         to_play = []
@@ -286,6 +290,7 @@ class Array(Scene):
         to_play.append(ApplyMethod(brace.shift, UP))
 
         self.play(*to_play)
+        self.wait(1)
 
         self.play(ApplyMethod(arrow.shift, code.scale * DOWN))
 
